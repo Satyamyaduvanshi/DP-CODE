@@ -1,0 +1,20 @@
+Clear[x];
+sum = 0;
+points = {{1, 2}, {2, 5}, {3, 10}};
+No = Length[points];
+
+Print["Given values of x[i] are as follows : ", points[[All, 1]]];
+Print["Given values of f[x[i]] are as follows : ", points[[All, 2]]];
+
+lagrange[No_, i_] := Product[
+  If[Equal[k, i], 1, (x - points[[k, 1]])/(points[[i, 1]] - points[[k, 1]])],
+  {k, 1, No}
+]
+
+For[i = 1, i <= No, i++,
+  sum += (points[[i, 2]]*lagrange[No, i]);
+]
+
+Print[sum];
+Print["The polynomial function will be : ", Expand[sum]];
+Print["Polynomial at x=2.5 is : ", sum /. x -> 2.5];
