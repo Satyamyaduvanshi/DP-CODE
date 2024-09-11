@@ -1,0 +1,25 @@
+Clear[x];
+sum = 0;
+points = {{1, 2}, {2, 5}, {3, 10}};
+No = Length[points];
+
+Print["Given values of x[i] are as follows : ", points[[All, 1]]];
+Print["Given values of f[x[i]] are as follows : ", points[[All, 2]]];
+
+(* Divided difference function *)
+dividedDifference[points_, i_, j_] := 
+  If[i == j, points[[i, 2]], 
+   (dividedDifference[points, i + 1, j] - dividedDifference[points, i, j - 1])/(points[[j, 1]] - points[[i, 1]])]
+
+(* Newton polynomial function *)
+newtonTerm[points_, i_] := Product[x - points[[k, 1]], {k, 1, i - 1}]
+
+sum = points[[1, 2]]; (* First term is f[x_0] *)
+
+For[i = 2, i <= No, i++,
+  sum += dividedDifference[points, 1, i] * newtonTerm[points, i];
+]
+
+Print[sum];
+Print["The polynomial function will be : ", Expand[sum]];
+Print["Polynomial at x=2.5 is : ", sum /. x -> 2.5];
