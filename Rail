@@ -1,0 +1,71 @@
+def rail_fence_encrypt(text, key):
+    # Create a list of strings for each rail
+    rails = ['' for _ in range(key)]
+    rail_direction = 1  # Direction: 1 means moving down, -1 means moving up
+    current_rail = 0  # Start at the first rail
+
+    # Traverse the text and place characters in the appropriate rail
+    for char in text:
+        rails[current_rail] += char
+        current_rail += rail_direction
+
+        # Change direction if we hit the top or bottom rail
+        if current_rail == 0 or current_rail == key - 1:
+            rail_direction *= -1
+
+    # Combine all rails to form the ciphertext
+    encrypted_text = ''.join(rails)
+    return encrypted_text
+
+
+def rail_fence_decrypt(ciphertext, key):
+    # Initialize variables to find out how many characters are in each rail
+    rail_lengths = [0] * key
+    rail_direction = 1
+    current_rail = 0
+
+    # Determine the length of each rail
+    for _ in ciphertext:
+        rail_lengths[current_rail] += 1
+        current_rail += rail_direction
+
+        # Change direction if we hit the top or bottom rail
+        if current_rail == 0 or current_rail == key - 1:
+            rail_direction *= -1
+
+    # Create a list of strings for each rail to fill with characters from the ciphertext
+    rails = ['' for _ in range(key)]
+    index = 0
+
+    # Fill each rail with the corresponding portion of the ciphertext
+    for rail in range(key):
+        rails[rail] = ciphertext[index:index + rail_lengths[rail]]
+        index += rail_lengths[rail]
+
+    # Read the rails in zigzag order to reconstruct the original text
+    decrypted_text = ''
+    current_rail = 0
+    rail_direction = 1
+
+    for _ in range(len(ciphertext)):
+        decrypted_text += rails[current_rail][0]  # Append the first character of the current rail
+        rails[current_rail] = rails[current_rail][1:]  # Remove the used character from the rail
+        current_rail += rail_direction
+
+        # Change direction if we hit the top or bottom rail
+        if current_rail == 0 or current_rail == key - 1:
+            rail_direction *= -1
+
+    return decrypted_text
+
+
+# Example usage
+if __name__ == "__main__":
+    text = "HELLO WORLD"
+    key = 3
+
+    encrypted = rail_fence_encrypt(text, key)
+    print("Encrypted:", encrypted)
+
+    decrypted = rail_fence_decrypt(encrypted, key)
+    print("Decrypted:", decrypted)
