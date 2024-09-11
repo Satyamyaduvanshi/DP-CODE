@@ -4,12 +4,14 @@ n = Length[points];
 x = points[[All, 1]];
 f = points[[All, 2]];
 
+(* Divided Differences Calculation *)
 dd[k_] := Sum[
    (f[[l]]/Product[If[Equal[l, i], 1, (x[[l]] - x[[i]])], {i, 1, k}]), {l, 1, k}
 ];
 
+(* Newton Polynomial Construction *)
 p[x_] := Sum[
-   (dd[i] * Product[(x - x[[j]]), {j, 1, i - 1}]), {i, 1, n}
+   (dd[i] * Product[(x - points[[j, 1]]), {j, 1, i - 1}]), {i, 1, n}
 ];
 
 Simplify[p[x]];
