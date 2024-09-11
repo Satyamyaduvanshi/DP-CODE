@@ -1,25 +1,16 @@
-Clear[x];
 sum = 0;
-points = {{1, 2}, {2, 5}, {3, 10}};
-No = Length[points];
+points = {{3, 293}, {5, 508}, {6, 585}, {9, 764}};
+n = Length[points];
+x = points[[All, 1]];
+f = points[[All, 2]];
 
-Print["Given values of x[i] are as follows : ", points[[All, 1]]];
-Print["Given values of f[x[i]] are as follows : ", points[[All, 2]]];
+dd[k_] := Sum[
+   (f[[l]]/Product[If[Equal[l, i], 1, (x[[l]] - x[[i]])], {i, 1, k}]), {l, 1, k}
+];
 
-(* Divided difference function *)
-dividedDifference[points_, i_, j_] := 
-  If[i == j, points[[i, 2]], 
-   (dividedDifference[points, i + 1, j] - dividedDifference[points, i, j - 1])/(points[[j, 1]] - points[[i, 1]])]
+p[x_] := Sum[
+   (dd[i] * Product[(x - x[[j]]), {j, 1, i - 1}]), {i, 1, n}
+];
 
-(* Newton polynomial function *)
-newtonTerm[points_, i_] := Product[x - points[[k, 1]], {k, 1, i - 1}]
-
-sum = points[[1, 2]]; (* First term is f[x_0] *)
-
-For[i = 2, i <= No, i++,
-  sum += dividedDifference[points, 1, i] * newtonTerm[points, i];
-]
-
-Print[sum];
-Print["The polynomial function will be : ", Expand[sum]];
-Print["Polynomial at x=2.5 is : ", sum /. x -> 2.5];
+Simplify[p[x]];
+Evaluate[p[3.5]];
