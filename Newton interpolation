@@ -1,18 +1,15 @@
 sum = 0;
 points = {{3, 293}, {5, 508}, {6, 585}, {9, 764}};
-n = Length[points];
-x = points[[All, 1]];
-f = points[[All, 2]];
-
-(* Divided Differences Calculation *)
-dd[k_] := Sum[
-   (f[[l]]/Product[If[Equal[l, i], 1, (x[[l]] - x[[i]])], {i, 1, k}]), {l, 1, k}
-];
-
-(* Newton Polynomial Construction *)
-p[x_] := Sum[
-   (dd[i] * Product[(x - points[[j, 1]]), {j, 1, i - 1}]), {i, 1, n}
-];
-
-Simplify[p[x]];
-Evaluate[p[3.5]];
+n = Length[points]
+y = points[[All, 1]]
+f = points[[All, 2]]
+dd[k_] :=
+ Sum[
+  (f[[i]]/
+    Product[If[Equal[j, i], 1, (y[[i]] - y[[j]])], {j, 1, k}]), {i, 1,
+    k}]
+p[x_] =
+ Sum[
+  (dd[i]*Product[If[i <= j, 1, x - y[[j]]], {j, 1, i - 1}]), {i, 1, n}]
+Simplify[p[x]]
+Evaluate[p[3.5]]
